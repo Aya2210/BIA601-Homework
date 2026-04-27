@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIA601 | الخوارزميات الجينية – تحسين التوصيات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
+            background: linear-gradient(145deg, #0a0f1a 0%, #0b1120 100%);
+            color: #e8edf5;
+            line-height: 1.7;
+            padding: 30px 20px;
+        }
+
+        /* تأثيرات الخلفية */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 40%, rgba(245,176,66,0.08) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(15, 25, 45, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 52px;
+            border: 1px solid rgba(245, 176, 66, 0.25);
+            box-shadow: 0 30px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(245,176,66,0.1);
+            overflow: hidden;
+            padding: 45px;
+        }
+
+        /* رأس الصفحة */
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f5b042 0%, #e2b13b 40%, #ffeaac 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: #b9c7d9;
+            font-size: 1.1rem;
+        }
+
+        .gold-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(245, 176, 66, 0.12);
+            border: 1px solid rgba(245, 176, 66, 0.3);
+            padding: 8px 28px;
+            border-radius: 50px;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        /* كروت الأقسام */
+        .section-card {
+            background: rgba(10, 18, 30, 0.6);
+            backdrop-filter: blur(4px);
+            border-radius: 32px;
+            padding: 28px 32px;
+            margin-bottom: 32px;
+            border: 1px solid rgba(245, 176, 66, 0.2);
+            transition: 0.2s;
+        }
+
+        .section-card:hover {
+            border-color: rgba(245, 176, 66, 0.4);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .section-title {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #f5b042;
+            border-right: 4px solid #f5b042;
+            padding-right: 20px;
+            margin-bottom: 25px;
+        }
+
+        /* شبكة الخطوات */
+        .steps-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .step-card {
+            flex: 1;
+            background: rgba(0,0,0,0.35);
+            border-radius: 24px;
+            padding: 18px;
+            text-align: center;
+            border: 1px solid rgba(245,176,66,0.2);
+        }
+        .step-card i {
+            font-size: 2.2rem;
+            color: #f5b042;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* منطقة رفع الملفات */
+        .upload-section {
+            background: linear-gradient(135deg, rgba(20,30,50,0.7), rgba(10,18,30,0.7));
+            border-radius: 40px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .file-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            justify-content: center;
+            margin: 25px 0;
+        }
+        .file-item {
+            background: rgba(0,0,0,0.4);
+            border-radius: 28px;
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid rgba(245,176,66,0.3);
+            min-width: 150px;
+        }
+        .file-item:hover {
+            background: rgba(245,176,66,0.12);
+            border-color: #f5b042;
+        }
+        .file-item i {
+            font-size: 1.8rem;
+            color: #f5b042;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .btn-gold {
+            background: linear-gradient(135deg, #f5b042, #d4af37);
+            border: none;
+            padding: 14px 38px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 60px;
+            color: #0a0f1a;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 15px;
+        }
+        .btn-gold:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(245,176,66,0.4);
+        }
+
+        /* إحصائيات */
+        .stats-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .stat-box {
+            background: rgba(0,0,0,0.4);
+            border-radius: 28px;
+            padding: 18px;
+            text-align: center;
+            flex: 1;
+            border: 1px solid rgba(245,176,66,0.2);
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #f5b042;
+        }
+
+        /* جدول النتائج */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 24px;
+            overflow: hidden;
+        }
+        .results-table th {
+            background: rgba(245,176,66,0.2);
+            color: #f5b042;
+            padding: 14px;
+            font-weight: 600;
+        }
+        .results-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            text-align: center;
+        }
+        .results-table tr:hover {
+            background: rgba(245,176,66,0.05);
+        }
+
+        /* شريط Git */
+        .git-footer {
+            background: linear-gradient(90deg, #1a2538, #0f172a);
+            border-radius: 50px;
+            padding: 18px 25px;
+            margin-top: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid rgba(245,176,66,0.2);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 45px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(245,176,66,0.15);
+            color: #8a9bb5;
+        }
+
+        @media (max-width: 900px) {
+            .container { padding: 25px; }
+            .hero h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="bg-particles"></div>
+<div class="container">
+   
+    <div class="hero">
+        <div class="gold-badge">
+            <i class="fab fa-github"></i> BIA601 – الخوارزميات الذكية | الفصل الدراسي S25
+            <i class="fas fa-dna"></i>
+        </div>
+        <h1>🧬 تحسين التوصيات في المتاجر الإلكترونية<br>باستخدام الخوارزميات الجينية</h1>
+
+    </div>
+
+    <!-- 1. المقدمة -->
+    <div class="section-card">
+        <div class="section-title"><i class="fas fa-book-open"></i> 1. المقدمة</div>
+        <p>مع التطور السريع في التجارة الإلكترونية، أصبحت تجربة المستخدم عاملاً حاسماً في نجاح المنصات الرقمية. ومن أبرز التقنيات المستخدمة لتحسين هذه التجربة هي <strong>أنظمة التوصية (Recommendation Systems)</strong>. ومع ازدياد حجم البيانات وتعقيدها، برزت <strong>الخوارزميات الجينية (Genetic Algorithms)</strong> كأداة فعالة مستوحاة من الطبيعة، تُستخدم لتحسين جودة التوصيات بشكل تدريجي ومستمر.</p>
+    </div>
+
+    <!-- 2. مشكلة البحث -->
+    <div class="section-card">
+        <div class="section-title"><i class="fas fa-exclamation-triangle"></i> 2. مشكلة البحث</div>
+        <p>تعاني أنظمة التوصية التقليدية من عدة تحديات: ضعف التخصيص، الاعتماد على بيانات محدودة، وصعوبة التكيف مع تغير سلوك المستخدم. تكمن المشكلة في كيفية تحسين دقة التوصيات وزيادة تفاعل المستخدم باستخدام تقنيات أكثر تطوراً.</p>
+    </div>
+
+    <!-- 3. الهدف -->
+    <div class="section-card">
+        <div class="section-title"><i class="fas fa-bullseye"></i> 3. الهدف من المشروع</div>
+        <ul style="margin-right: 25px;">
+            <li>🎯 استخدام الخوارزميات الجينية لتحسين جودة التوصيات</li>
+            <li>📈 زيادة معدل التفاعل (نقر، مشاهدة، شراء)</li>
+            <li>🧠 بناء نظام قادر على التعلم والتكيف مع سلوك المستخدم</li>
+        </ul>
+    </div>
+
+    <!-- 4. المنهجية -->
+    <div class="section-card">
+        <div class="section-title"><i class="fas fa-microchip"></i> 4. المنهجية المستخدمة</div>
+        <h4 style="color:#f5b042;">4.1 الخوارزميات الجينية</h4>
+        <div class="steps-grid">
+            <div class="step-card"><i class="fas fa-users"></i> 1. مجتمع أولي</div>
+            <div class="step-card"><i class="fas fa-chart-line"></i> 2. تقييم اللياقة</div>
+            <div class="step-card"><i class="fas fa-trophy"></i> 3. اختيار الأفضل</div>
+            <div class="step-card"><i class="fas fa-hand-holding-heart"></i> 4. تزاوج (Crossover)</div>
+            <div class="step-card"><i class="fas fa-random"></i> 5. طفرة (Mutation)</div>
+        </div>
+        <h4 style="color:#f5b042; margin-top: 20px;">4.2 تطبيقها على نظام التوصية</h4>
+        <ul>
+            <li>📌 كل مجموعة توصيات تمثل "فرداً" في المجتمع</li>
+            <li>📌 يتم تقييمها بناءً على سلوك المستخدم (التقييمات، النقرات، المشتريات)</li>
+            <li>📌 يتم تطوير التوصيات عبر أجيال متتالية (5 أجيال في نظامنا)</li>
+        </ul>
+    </div>
+
+    <!-- 5. شرح البيانات -->
+    <div class="section-card">
+        <div class="section-title"><i class="fas fa-database"></i> 5. شرح البيانات المستخدمة</div>
+        <div class="stats-row">
+            <div class="stat-box"><i class="fas fa-user"></i><br>users.xlsx<br><small>user_id, age, country</small></div>
+            <div class="stat-box"><i class="fas fa-tag"></i><br>products.xlsx<br><small>product_id, category, price</small></div>
+            <div class="stat-box"><i class="fas fa-star"></i><br>ratings.xlsx<br><small>user_id, product_id, rating</small></div>
+            <div class="stat-box"><i class="fas fa-mouse-pointer"></i><br>behavior.xlsx<br><small>viewed, clicked, purchased</small></div>
+        </div>
+    </div>
+
+    <!-- 6. آلية العمل -->
+    <div class="section-card">
+        <div class="section-title"><i class="fas fa-diagram-project"></i> 6. آلية عمل النظام</div>
+        <ol style="margin-right: 25px;">
+            <li>🔹 إنشاء توصيات عشوائية مبدئية</li>
+            <li>🔹 تقييم الأداء بناءً على: النقرات، المشاهدات، المشتريات</li>
+            <li>🔹 اختيار أفضل التوصيات (أعلى درجة لياقة)</li>
+            <li>🔹 توليد توصيات جديدة باستخدام Crossover و Mutation</li>
+            <li>🔹 تكرار العملية حتى تحسين النتائج (5 أجيال)</li>
+        </ol>
+    </div>
+
+    <!-- 7. رفع الملفات والتشغيل -->
+    <div class="upload-section">
+        <h3><i class="fas fa-cloud-upload-alt"></i> رفع ملفات البيانات</h3>
+        <div class="file-grid">
+            <div class="file-item" onclick="document.getElementById('usersFile').click()">
+                <i class="fas fa-user"></i>
+                <span>users.xlsx</span>
+                <input type="file" id="usersFile" accept=".xlsx, .xls" style="display:none">
+            </div>
+            <div class="file-item" onclick="document.getElementById('productsFile').click()">
+                <i class="fas fa-box"></i>
+                <span>products.xlsx</span>
+                <input type="file" id="productsFile" accept=".xlsx, .xls" style="display:none">
+            </div>
+            <div class="file-item" onclick="document.getElementById('ratingsFile').click()">
+                <i class="fas fa-star"></i>
+                <span>ratings.xlsx</span>
+                <input type="file" id="ratingsFile" accept=".xlsx, .xls" style="display:none">
+            </div>
+            <div class="file-item" onclick="document.getElementById('behaviorFile').click()">
+                <i class="fas fa-mouse-pointer"></i>
+                <span>behavior.xlsx</span>
+                <input type="file" id="behaviorFile" accept=".xlsx, .xls" style="display:none">
+            </div>
+        </div>
+        <button class="btn-gold" id="runBtn"><i class="fas fa-play"></i> تشغيل الخوارزمية الجينية</button>
+    </div>
+
+    <!-- إحصائيات -->
+    <div id="statsArea" class="stats-row"></div>
+
+    <!-- نتائج التوصيات -->
+    <div class="section-card">
+        <div class="section-title"><i class="fas fa-gem"></i> 7. نتائج التوصيات المُحسَّنة</div>
+        <p id="recommendationText" style="color:#b9c7d9;">✨ يرجى رفع جميع الملفات ثم الضغط على زر التشغيل.</p>
+        <div id="recommendationTable"></div>
+    </div>
+
+    <!-- 8. النتائج المتوقعة والمناقشة -->
+    <div class="section-card">
+        <div class="section-title"><i class="fas fa-chart-line"></i> 8. النتائج المتوقعة والمناقشة</div>
+        <ul>
+            <li>📊 تحسين دقة التوصيات</li>
+            <li>💰 زيادة معدل الشراء</li>
+            <li>😊 تحسين تجربة المستخدم</li>
+            <li>🗑️ تقليل عرض المنتجات غير المناسبة</li>
+        </ul>
+        <div style="background: rgba(245,176,66,0.1); padding: 15px; border-radius: 24px; margin-top: 15px;">
+            <strong><i class="fas fa-comment-dots"></i> مناقشة:</strong> تُظهر الخوارزميات الجينية قدرة عالية على التعامل مع البيانات المعقدة والمتغيرة. لكنها قد تواجه تحديات مثل الحاجة إلى وقت معالجة أكبر وصعوبة ضبط المعاملات (معدل الطفرة).
+        </div>
+    </div>
+
+    <!-- 9. الخاتمة -->
+    <div class="section-card">
+        <div class="section-title"><i class="fas fa-check-circle"></i> 9. الخاتمة</div>
+        <p>تُعد الخوارزميات الجينية من الأدوات القوية في تحسين أنظمة التوصية، حيث توفر طريقة ديناميكية وفعالة للوصول إلى أفضل النتائج. إن استخدامها في المتاجر الإلكترونية يمكن أن يُحدث فرقًا كبيرًا في تجربة المستخدم وزيادة الأرباح.</p>
+    </div>
+
+    <!-- 10. المراجع -->
+    <div class="section-card">
+        <div class="section-title"><i class="fas fa-book"></i> 10. المراجع</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+            <a href="https://dl.acm.org/doi/10.1145/3285029" target="_blank" style="color:#f5b042;">ACM Digital Library</a>
+            <a href="https://ieeexplore.ieee.org/" target="_blank" style="color:#f5b042;">IEEE Xplore</a>
+            <a href="https://www.sciencedirect.com/journal/expert-systems-with-applications" target="_blank" style="color:#f5b042;">Expert Systems with Applications</a>
+            <a href="https://docs.aws.amazon.com/personalize/" target="_blank" style="color:#f5b042;">AWS Personalize</a>
+            <a href="https://cloud.google.com/recommendations-ai" target="_blank" style="color:#f5b042;">Google Recommendations AI</a>
+        </div>
+        <p style="margin-top: 15px;">📚 Goldberg (1989), Mitchell (1998), Recommender Systems Handbook – Springer.</p>
+    </div>
+
+    <!-- شريط Git -->
+    <div class="git-footer">
+        <div><i class="fab fa-git-alt" style="color:#f5b042;"></i> <strong>إدارة الإصدارات بـ Git</strong><br>✓ 7 commits | ✓ main + develop | ✓ v1.0</div>
+        <div><i class="fab fa-github"></i> <a href="#" style="color:#f5b042;">##########</a></div>
+    
+    </div>
+
+    <footer>
+        <i class="fas fa-crown"></i> – BIA601 الخوارزميات الذكية <i class="fas fa-crown"></i><br>
+        جميع الحقوق محفوظة | نظام توصيات بالخوارزميات الجينية
+    </footer>
+</div>
+
+<script>
+    let usersData = [], productsData = [], ratingsData = [], behaviorData = [];
+
+    function readFile(file, callback) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const json = XLSX.utils.sheet_to_json(sheet);
+            callback(json);
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    function updateFileStatus() {
+        ['usersFile', 'productsFile', 'ratingsFile', 'behaviorFile'].forEach(id => {
+            let input = document.getElementById(id);
+            let parent = input.closest('.file-item');
+            if (input.files.length > 0) {
+                parent.style.borderColor = "#f5b042";
+                parent.style.background = "rgba(245,176,66,0.15)";
+            } else {
+                parent.style.borderColor = "rgba(245,176,66,0.3)";
+                parent.style.background = "rgba(0,0,0,0.4)";
+            }
+        });
+    }
+
+    document.getElementById('usersFile').addEventListener('change', updateFileStatus);
+    document.getElementById('productsFile').addEventListener('change', updateFileStatus);
+    document.getElementById('ratingsFile').addEventListener('change', updateFileStatus);
+    document.getElementById('behaviorFile').addEventListener('change', updateFileStatus);
+
+    function calculateProductScore(productId) {
+        let totalRating = 0, ratingCount = 0, behaviorScore = 0;
+        ratingsData.forEach(r => { if (r.product_id == productId) { totalRating += r.rating; ratingCount++; } });
+        const avgRating = ratingCount > 0 ? totalRating / ratingCount : 0;
+        behaviorData.forEach(b => { if (b.product_id == productId) { if (b.purchased == 1) behaviorScore += 5; else if (b.clicked == 1) behaviorScore += 2; else if (b.viewed == 1) behaviorScore += 1; } });
+        return (avgRating * 2) + behaviorScore;
+    }
+
+    function runGeneticAlgorithm() {
+        let productScores = productsData.map(p => ({ id: p.product_id, score: calculateProductScore(p.product_id) }));
+        productScores.sort((a,b) => b.score - a.score);
+        let population = productScores.slice(0, 20).map(p => [p.id]);
+        for (let gen = 0; gen < 5; gen++) {
+            let fitness = population.map(ind => ind.reduce((sum, pid) => sum + (productScores.find(p => p.id == pid)?.score || 0), 0));
+            let indexed = population.map((ind, idx) => ({ ind, fit: fitness[idx] }));
+            indexed.sort((a,b) => b.fit - a.fit);
+            let best = indexed.slice(0, 10).map(x => x.ind);
+            let newPopulation = [...best];
+            while (newPopulation.length < 20 && best.length >= 2) {
+                let parent1 = best[Math.floor(Math.random() * best.length)];
+                let parent2 = best[Math.floor(Math.random() * best.length)];
+                let child = [...new Set([...parent1, ...parent2])].slice(0, 5);
+                newPopulation.push(child);
+            }
+            let allProductIds = productsData.map(p => p.product_id);
+            for (let i = 0; i < newPopulation.length && i < 20; i++) {
+                if (Math.random() < 0.3) {
+                    let randomProduct = allProductIds[Math.floor(Math.random() * allProductIds.length)];
+                    if (!newPopulation[i].includes(randomProduct)) {
+                        newPopulation[i].push(randomProduct);
+                        if (newPopulation[i].length > 5) newPopulation[i].pop();
+                    }
+                }
+            }
+            population = newPopulation.slice(0, 20);
+        }
+        let finalFitness = population.map(ind => ind.reduce((sum, pid) => sum + (productScores.find(p => p.id == pid)?.score || 0), 0));
+        let bestIndex = finalFitness.indexOf(Math.max(...finalFitness));
+        let bestRecommendations = population[bestIndex];
+        return bestRecommendations.map(pid => {
+            let product = productsData.find(p => p.product_id == pid);
+            let score = productScores.find(p => p.id == pid).score;
+            return { ...product, score: score.toFixed(2) };
+        });
+    }
+
+    document.getElementById('runBtn').addEventListener('click', () => {
+        const usersFile = document.getElementById('usersFile').files[0];
+        const productsFile = document.getElementById('productsFile').files[0];
+        const ratingsFile = document.getElementById('ratingsFile').files[0];
+        const behaviorFile = document.getElementById('behaviorFile').files[0];
+        if (!usersFile || !productsFile || !ratingsFile || !behaviorFile) {
+            alert("❌ يرجى رفع جميع الملفات الأربعة أولاً");
+            return;
+        }
+        Promise.all([
+            new Promise(resolve => readFile(usersFile, resolve)),
+            new Promise(resolve => readFile(productsFile, resolve)),
+            new Promise(resolve => readFile(ratingsFile, resolve)),
+            new Promise(resolve => readFile(behaviorFile, resolve))
+        ]).then(([users, products, ratings, behavior]) => {
+            usersData = users; productsData = products; ratingsData = ratings; behaviorData = behavior;
+            // عرض الإحصائيات
+            document.getElementById('statsArea').innerHTML = `
+                <div class="stat-box"><div class="stat-number">${usersData.length}</div>👥 مستخدم</div>
+                <div class="stat-box"><div class="stat-number">${productsData.length}</div>📦 منتج</div>
+                <div class="stat-box"><div class="stat-number">${ratingsData.length}</div>⭐ تقييم</div>
+                <div class="stat-box"><div class="stat-number">${behaviorData.length}</div>🖱️ سجل سلوك</div>
+            `;
+            const recommendations = runGeneticAlgorithm();
+            const container = document.getElementById('recommendationTable');
+            const textDiv = document.getElementById('recommendationText');
+            if (!recommendations || recommendations.length === 0) {
+                textDiv.innerHTML = "⚠️ لم يتم العثور على توصيات محسنة.";
+                container.innerHTML = "";
+                return;
+            }
+            textDiv.innerHTML = `✅ تم تحسين التوصيات بعد <strong>5 أجيال</strong> من الخوارزمية الجينية (انتقاء، تزاوج، طفرة)`;
+            let html = `<table class="results-table"><thead><tr><th># المنتج</th><th>التصنيف</th><th>السعر</th><th>درجة اللياقة</th></tr></thead><tbody>`;
+            recommendations.forEach(p => {
+                html += `<tr><td>${p.product_id}</td><td>${p.category || '-'}</td><td>${p.price || '-'}</td><td style="color:#f5b042;">${p.score}</td></tr>`;
+            });
+            html += `</tbody></table><p style="margin-top:15px;">🧬 كل منتج تم تقييمه بناءً على التقييمات والسلوك (نقر/شراء) ثم تطويره عبر الأجيال.</p>`;
+            container.innerHTML = html;
+        }).catch(err => { alert("⚠️ خطأ في قراءة الملفات"); });
+    });
+</script>
+</body>
+</html>
